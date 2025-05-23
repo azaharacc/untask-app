@@ -1,0 +1,71 @@
+/* CSS */
+.task {
+  display: inline-flex;
+  gap: 1rem;
+}
+
+.taskControls {
+  margin: 3%;
+  display: flex;
+  gap: 1%;
+}
+
+.button-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.task-actions {
+  display: inline-flex;
+  margin: 1%;
+}
+
+.add,
+.delete {
+  padding: 0.5rem 1rem;
+  margin: 0;
+  border: 1px solid #a0a0a0;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.add:hover,
+.delete:hover {
+  border-color: #555;
+}
+
+.input {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 40%;
+}
+
+.input:focus,
+.input:hover {
+
+  outline:#2e2e2e;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .taskControls {
+    margin: 1%;
+    padding: 5% 0px;
+    display: block;
+  }
+
+  .input {
+    width: 96%;
+    display: block;
+    align-content: center;
+    margin-bottom: 2%;
+  }
+
+  .add,
+  .delete {
+    margin: 1%;
+  }
+}

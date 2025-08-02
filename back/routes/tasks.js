@@ -1,20 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const authenticateToken = require('../middleware/auth');
 const getLeisureSuggestionOpenAI = require('../utils/openai');
-
-// function to validate the name of the task
-function isValidTaskName(name) {
-  const trimmed = name.trim();
-
-  if (trimmed.length < 3 || trimmed.length > 100) return false;
-  if (!/[a-zA-Z0-9]/.test(trimmed)) return false;
-
-  const blacklist = ['puta', 'mierda', 'kill', 'bomb', 'nazi', 'sexo'];
-  if (blacklist.some(bad => trimmed.toLowerCase().includes(bad))) return false;
-
-  return true;
-}
 
 // Create table if not exists
 pool.query(`
@@ -35,14 +23,14 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST
-router.post('/', async (req, res) => {
-  const { name } = req.body;
+router.get('/private', authenticateToken, async (req, res) => {
+  const result = await pool.query('SELECT * FROM tasks WHERE user_id = $1 ORDER BY created_at DESC', [req.userId]);
+  res.json(result.rows);xw
+});
 
-  // Validate name before continue
-  if (!isValidTaskName(name)) {
-    return res.status(400).json({ error: 'Nombre de tarea no válido' });
-  }
+// POST
+router.post('/', authenticateToken, async (req, res) => {
+  const { name } = req.body;
 
   try {
     const existing = await pool.query(
@@ -67,8 +55,8 @@ router.post('/', async (req, res) => {
     }
 
     const result = await pool.query(
-      'INSERT INTO tasks (name, suggestion) VALUES ($1, $2) RETURNING *',
-      [name, suggestion]
+      'INSERT INTO tasks (name, suggestion, user_id) VALUES ($1, $2, $3) RETURNING *',
+      [name, suggestion, req.userId]
     );
 
     res.status(201).json(result.rows[0]);
@@ -80,7 +68,7 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query('DELETE FROM tasks WHERE id = $1', [id]);

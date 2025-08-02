@@ -4,6 +4,8 @@
 
 Fullstack application that allows users to enter pending tasks and receive in return an AI-generated excuse for not doing them. An experiment that mixes time management with humor and reflection on our daily life and priorities.
 
+A public list of example tasks is displayed by default. To manage your own task list (add, check or delete tasks), login is required.
+
 ## 🛠️ Technologies Used
 
 - **Frontend:** React
@@ -11,6 +13,8 @@ Fullstack application that allows users to enter pending tasks and receive in re
 - **Backend:** Node.js, Express, Axios
 
 - **Database:** PostgreSQL
+
+- **Authentication:** JWT-based login system
 
 - **IA**: OpenAI Api to generate non productive or leisure tasks
 
@@ -45,6 +49,7 @@ How does it work?
      ```
      OPENAI_API_KEY=your_api_key_here
      DATABASE_TASKS=your_db_url
+     JWT_SECRET=your_jwt_secret
      ```
 
 4. Start the backend:
@@ -60,9 +65,7 @@ How does it work?
 
 ## 🎉 To deploy this project
 
-- Deploy your backend on platforms like Heroku, Railway, etc.
-
-- Set up the PostgreSQL database in production.
+- Deploy your backend and set up the PostgreSQL database in production.
 
 - Ensure your API endpoints are publicly accessible.
 
@@ -73,10 +76,3 @@ How does it work?
 - Remember to configure environment variables in production accordingly.
 
 - Don't forget to set the environment variables correctly in production.
-
-
-## 💫 Disclaimer
-
-The application is configured to store 100 entries. When this limit is exceeded, the oldest tasks are automatically deleted from the database.
-
-

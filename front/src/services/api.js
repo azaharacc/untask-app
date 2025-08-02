@@ -12,17 +12,24 @@ export const fetchTasks = async () => {
 
 // Add a new task by sending a POST request with the task name
 export const addTask = async (name) => {
-  const res = await fetch(`${API_URL}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name }), // Convert task name to JSON
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://localhost:3001/tasks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name }),
   });
-  return res.json(); // Return the created task data from backend
+  return res.json();
 };
 
-// Delete a task by its ID by sending a DELETE request
 export const deleteTask = async (id) => {
-  await fetch(`${API_URL}/${id}`, {
-    method: "DELETE",
+  const token = localStorage.getItem('token');
+  await fetch(`http://localhost:3001/tasks/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };

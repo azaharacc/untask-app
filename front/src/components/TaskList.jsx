@@ -15,7 +15,7 @@ function getColorFromId(id) {
 }
 
 // Display a list/grid of tasks
-function TaskList({ tasks, selected, onToggle }) {
+function TaskList({ tasks, selected, onToggle, token }) {
   return (
     <div className="taskGrid">
       {tasks.map((task) => (
@@ -25,6 +25,7 @@ function TaskList({ tasks, selected, onToggle }) {
           isSelected={selected.includes(task.id)} // Determine if task is selected
           onToggle={onToggle} // Function to toggle selection
           bgColor={getColorFromId(task.id)} // Assign a pastel color background
+          token={token} //pass token to each taskitem
         />
       ))}
     </div>

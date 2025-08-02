@@ -2,55 +2,54 @@ import { useEffect, useState } from "react";
 import AddTask from "./components/AddTasks";
 import TaskList from "./components/TaskList";
 import { fetchTasks, addTask, deleteTask } from "./services/api";
+import useAuth from "./hooks/useAuth";
 import "./App.css";
 
 function App() {
-  // State to store the list of tasks fetched from the backend
-  const [tasks, setTasks] = useState([]);
-  
-  // State to store the IDs of selected tasks (for deletion or toggling)
-  const [selected, setSelected] = useState([]);
+  const {
+    token,
+    isAuthenticated,
+    email,
+    password,
+    setEmail,
+    setPassword,
+    login,
+    logout,
+  } = useAuth();
 
-  // Load tasks from the database when the component mounts
+  const [tasks, setTasks] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
   useEffect(() => {
     const load = async () => {
-      const data = await fetchTasks();  // Fetch tasks from API
-      setTasks(data);                    // Update state with fetched tasks
+      const data = await fetchTasks();
+      setTasks(data);
     };
     load();
-  }, []); // Empty dependency array means this runs once on component mount
+  }, []);
 
-  // Handler to add a new task
   const handleAdd = async (name) => {
     try {
-      // Call API to add the new task and wait for the created task object
-      const newTask = await addTask(name);
-      // Update tasks state by appending the new task
-      setTasks((prev) => [...prev, newTask]);
+      const newTask = await addTask(name, token);
+      setTasks((prev) => [newTask, ...prev]);
     } catch (error) {
       console.error("Error adding task:", error);
     }
   };
 
-  // Handler to toggle the selection of a task by its ID
   const handleToggle = (id) => {
     setSelected((prev) =>
-      prev.includes(id)
-        ? prev.filter((i) => i !== id) // Remove if already selected
-        : [...prev, id]                 // Add if not selected
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
-  // Handler to delete all selected tasks
   const handleDeleteSelected = async () => {
     try {
-      // Loop through each selected task ID and call the API to delete it
       for (const id of selected) {
-        await deleteTask(id);
+        await deleteTask(id, token);
       }
-      // Remove deleted tasks from the tasks state
       setTasks((prev) => prev.filter((t) => !selected.includes(t.id)));
-      // Clear the selection
       setSelected([]);
     } catch (error) {
       console.error("Error deleting tasks:", error);
@@ -60,16 +59,59 @@ function App() {
   return (
     <div>
       <h1>add task, receive untask</h1>
-      {/* AddTask component to add new tasks and delete selected tasks */}
-      <AddTask onAdd={handleAdd} onDeleteSelected={handleDeleteSelected} />
-      
-      {/* TaskList component to display tasks and handle toggling selection */}
+
+      {isAuthenticated ? (
+        <>
+          <button onClick={logout}>Logout</button>
+          <AddTask onAdd={handleAdd} onDeleteSelected={handleDeleteSelected} />
+        </>
+      ) : (
+        <div>
+          <p>
+            You are viewing a public list of example tasks. To have your own untask list, login is needed.
+          </p>
+        </div>
+      )}
+
       <TaskList
         tasks={tasks}
         selected={selected}
         onToggle={handleToggle}
-        onDeleteSelected={handleDeleteSelected}
+        token={token}
       />
+
+      {/* button bottom right */}
+      {!isAuthenticated && (
+      <div className="login-floating-box">
+  <button
+    className="login-toggle-button"
+    onClick={() => setShowLoginForm(show => !show)}
+  >
+    {showLoginForm ? "Close Login" : "Login"}
+  </button>
+
+  {showLoginForm && (
+    <form className="login-form">
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <div className="login-buttons">
+        <button type="button" onClick={login}>Login</button>
+        <button type="button" onClick={() => setShowLoginForm(false)}>Cancel</button>
+      </div>
+    </form>
+  )}
+</div>
+      )}
     </div>
   );
 }

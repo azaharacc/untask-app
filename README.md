@@ -19,7 +19,7 @@ A public list of example tasks is displayed by default. To manage your own task 
 - **IA**: OpenAI Api to generate non productive or leisure tasks
 
 
-## 🎭 
+## 🎭 [Demo](https://untask.vercel.app/)
 ![screenshot](screenshot.png)
 
 ## 🚀 How does it work?

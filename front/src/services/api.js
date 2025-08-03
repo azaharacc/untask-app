@@ -13,7 +13,10 @@ export const fetchTasks = async () => {
 // Add a new task by sending a POST request with the task name
 export const addTask = async (name) => {
   const token = localStorage.getItem('token');
-  const res = await fetch('http://localhost:3001/tasks', {
+// localhost:
+//  const res = await fetch('http://localhost:3001/tasks', {
+// online:
+    const res = await fetch(`${API_URL}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -26,7 +29,10 @@ export const addTask = async (name) => {
 
 export const deleteTask = async (id) => {
   const token = localStorage.getItem('token');
-  await fetch(`http://localhost:3001/tasks/${id}`, {
+  // localhost:
+  // await fetch(`http://localhost:3001/tasks/${id}`, {
+  // online deployment:
+  const res = await fetch(`${API_URL}/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,

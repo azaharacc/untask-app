@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+const BACK_URL = import.meta.env.VITE_TASKS_BACK;
 
 function useAuth() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -15,7 +16,10 @@ function useAuth() {
 
   const login = async () => {
     try {
-      const res = await fetch('http://localhost:3001/auth/login', {
+      // local deployment:
+      // const res = await fetch('http://localhost:3001/auth/login');
+      // online
+      const res = await fetch(`${BACK_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

@@ -1,4 +1,4 @@
-// Cargar variables de entorno
+// Environment variables
 require('dotenv').config();
 console.log(">> DATABASE_TASKS en runtime:", process.env.DATABASE_TASKS);
 
